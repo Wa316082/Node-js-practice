@@ -8,7 +8,7 @@ const url = require("url");
 const { StringDecoder } = require("string_decoder");
 const routes = require('../router/router');
 const {notFoundHandler} = require('../handlers/routeHandler/notFoundHandler');
-
+const {parseJSON} =require('../helpers/utilities')
 
  //module scaffholding
  const handler={};
@@ -35,17 +35,7 @@ const {notFoundHandler} = require('../handlers/routeHandler/notFoundHandler');
     let realData = "";
     const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
     
-    chosenHandler(requestProperties , (statusCode , payLoad)=>{
-        statusCode = typeof(statusCode) === 'number' ? statusCode : 500;
-        payLoad = typeof(payLoad) === 'object' ? payLoad :{};
-
-        const payloadString = JSON.stringify(payLoad);
-
-        //return the final response
-
-        res.writeHead(statusCode);
-        res.end(payloadString);
-    });
+    
     
     req.on("data", (buffer) => {
       realData += decoder.write(buffer);
@@ -53,8 +43,19 @@ const {notFoundHandler} = require('../handlers/routeHandler/notFoundHandler');
   
     req.on("end", () => {
       realData += decoder.end();
-      console.log(realData);
-      res.end("Hello Wasim");
+      requestProperties.body = parseJSON(realData);
+      chosenHandler(requestProperties , (statusCode , payLoad)=>{
+        statusCode = typeof(statusCode) === 'number' ? statusCode : 500;
+        payLoad = typeof(payLoad) === 'object' ? payLoad :{};
+
+        const payloadString = JSON.stringify(payLoad);
+
+        //return the final response
+
+        res.setHeader('Contemnt-type', 'application/json');
+        res.writeHead(statusCode);
+        res.end(payloadString);
+    });
     });
     
   };

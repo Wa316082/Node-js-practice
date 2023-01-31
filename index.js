@@ -9,20 +9,23 @@
 const { setServers } = require("dns/promises");
 const http = require("http");
 const {handleReqRes} = require('./helpers/handleReqRes')
+const env = require('./helpers/env');
+const data = require('./lib/data');
+
 //app object - modules scaffolding
 const app = {};
 
-//configuration
-app.config = {
-  port: 3000,
-};
+// data.delete('test','newfile',  (err)=>{
+//   console.log(err);
+// });
+
 
 //create server
 
 app.createServer = () => {
   const server = http.createServer(app.handleRequest);
-  server.listen(app.config.port, () => {
-    console.log(`listening to port ${app.config.port}`);
+  server.listen(env.port, () => {
+    console.log(`listening to port ${env.port}`);
   });
 };
 
