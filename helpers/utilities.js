@@ -38,4 +38,24 @@ const env = require('./env')
 
  }
 
+  //Token generate for authentications
+  utilities.createToken = (stringLength)=>{
+     
+
+    let length = stringLength;
+    length = typeof(stringLength) === 'number' && stringLength >10 ?stringLength : false;
+    if(length){
+        let possibleCharacters = 'abcdefghijklmnopqrstuvwxyz1234567890@#$%^&*';
+        let output = '';
+
+        for(let i = 1; i<= length; i++){
+           let  randomCharacter = possibleCharacters.charAt(Math.floor(Math.random()*possibleCharacters.length));
+            output += randomCharacter;
+        }
+        return output;
+    }else{
+        return false;
+    }
+ }
+
  module.exports =utilities;
